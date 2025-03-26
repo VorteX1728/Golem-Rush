@@ -47,23 +47,23 @@ def exit_possible(startx, starty, exitx, exity):
 def deikstra(start, goal, grid):
     queue = []
     heapq.heappush(queue, (0, start))
-    came_from = {}
-    cost_so_far = {start: 0}
+    fromp = {}
+    cost = {start: 0}
 
     while queue:
-        current = heapq.heappop(queue)[1]
+        curr = heapq.heappop(queue)[1]
 
-        if current == goal:
+        if curr == goal:
             path = []
             node = goal
             while node != start:
                 path.append(node)
-                node = came_from[node]
+                node = fromp[node]
             path.append(start)
             path.reverse()
             return path
 
-        x, y = current
+        x, y = curr
         neighbors = []
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nx, ny = x + dx, y + dy
@@ -71,12 +71,12 @@ def deikstra(start, goal, grid):
                 neighbors.append((nx, ny))
 
         for neighbor in neighbors:
-            new_cost = cost_so_far[current] + 1
-            if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
-                cost_so_far[neighbor] = new_cost
-                priority = new_cost
+            ncost = cost[curr] + 1
+            if neighbor not in cost or ncost < cost[neighbor]:
+                cost[neighbor] = ncost
+                priority = ncost
                 heapq.heappush(queue, (priority, neighbor))
-                came_from[neighbor] = current
+                fromp[neighbor] = curr
 
     return []
 
@@ -136,7 +136,7 @@ def newRoom(startx, starty, size, coinsnum, spikesnum, enemiesnum):
             keyx, keyy = keyxm, keyym
             break
 
-    if random.randint(1, 10) == 7:
+    if random.randint(1, 2) == 1:
         while True:
             heartxm, heartym = random.randint(1, r - 2), random.randint(1, c - 2)
             if matrix[heartxm][heartym] == white and [heartxm, heartym] not in spikes and [heartxm, heartym] not in coins and heartxm != keyx and heartym != keyy:
@@ -380,7 +380,7 @@ coinsnum = 1
 spikesnum = 0
 enemiesnum = 0
 coins_count = 0
-max_HP = 50
+max_HP = 30
 HP_count = max_HP
 on_spike = False
 on_enemie = False
@@ -760,7 +760,8 @@ while running:
         screen.blit(random_coin, (i[1] * size, i[0] * size))
 
     screen.blit(random_key, (keyy * size, keyx * size))
-    screen.blit(heart, (heartx * size, hearty * size))
+    if heartx != -1 and hearty != -1:
+        screen.blit(heart, (heartx * size, hearty * size))
 
     for i in enemies:
         enemyx, enemyy, path, count, enemy_direction = i
