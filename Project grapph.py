@@ -136,7 +136,7 @@ def newRoom(startx, starty, size, coinsnum, spikesnum, enemiesnum):
             keyx, keyy = keyxm, keyym
             break
 
-    if random.randint(1, 2) == 1:
+    if random.randint(1, 10) == 7:
         while True:
             heartxm, heartym = random.randint(1, r - 2), random.randint(1, c - 2)
             if matrix[heartxm][heartym] == white and [heartxm, heartym] not in spikes and [heartxm, heartym] not in coins and heartxm != keyx and heartym != keyy:
@@ -213,7 +213,7 @@ def menu():
             if event.type == pygame.QUIT:
                 pygame.mixer.music.stop()
                 pygame.quit()
-                sys.exit()
+                return False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button.collidepoint(event.pos):
                     Book_snd.play()
@@ -279,6 +279,7 @@ def menu():
 
         pygame.display.flip()
         clock.tick(30)
+    return True
 
 def powerup_help(random_powerup):
     global HP_count, max_HP
@@ -832,15 +833,15 @@ if win:
     color_time = 0
     pygame.mixer.music.load("Winning music.ogg")
     pygame.mixer.music.play(loops=-1)
-    while True:
+
+    running1 = True
+    while running1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                running1 = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    running1 = False
 
         screen.blit(BG_win, (0, 0))
         color = color_change(color_time)
